@@ -8,6 +8,7 @@
     "js": [
       "jquery-2.2.0.min.js",
       "bootstrap-4.3.1-dist/js/bootstrap.min.js",
+      "utils.js",
       "ChEx.js",
       "content_script.js"
     ],
@@ -16,5 +17,8 @@
       "bootstrap-4.3.1-dist/css/bootstrap.min.css"
     ]
   }],
-  "options_page": "options.html"
+  "options_page": "options.html",
+  "permissions": [
+    "storage"
+  ]
 }
