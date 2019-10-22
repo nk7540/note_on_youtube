@@ -3,7 +3,7 @@ $(function () {
     $('#related').prepend(`
         <div id="notes" class="container">
             <div class="table-responsive">
-                <table class="table table-striped table-fixed" style="width: 100%;">
+                <table class="table table-striped table-fixed" style="table-layout: fixed;">
                     <thead>
                         <tr class="d-flex">
                             <th class="col-3">再生時間</th>
@@ -14,11 +14,11 @@ $(function () {
                 </table>
             </div>
         </div>
-        <div class="input-group mb-3">
+        <div class="input-group">
             <div class="input-group-prepend">
-                <span class="input-group-text" id="current-time"></span>
+                <span class="input-group-text" id="current-time-box"></span>
             </div>
-            <input id="note-input" type="text" class="form-control" placeholder="メモを追加" aria-label="Username" aria-describedby="basic-addon1">
+            <textarea id="note-input" type="text" class="form-control" placeholder="メモを追加" rows="4"></textarea>
             <div class="input-group-append">
                 <button id="add-note" class="btn btn-outline-secondary" type="button">追加</button>
             </div>
@@ -27,12 +27,13 @@ $(function () {
 
     const video = $('video').get(0);
     const input = $('#note-input');
+    const currentTimeBox = $('#current-time-box');
     var currentTime;
 
     input.on('focus', function(e){
         video.pause();
         currentTime = Math.floor(video.currentTime);
-        $('#current-time').text(`${Math.floor(currentTime / 60)}:${currentTime % 60}`)
+        currentTimeBox.text(formatTime(currentTime))
     });
 
     $('#add-note').on('click', function(e){
@@ -40,13 +41,14 @@ $(function () {
             <tr class="d-flex">
                 <th class="col-3" scope="row">
                     <a class="timestamps yt-simple-endpoint" href="/watch?v=${getParameterByName('v')}&t=${currentTime}s">
-                        ${Math.floor(currentTime / 60)}:${currentTime % 60}
+                        ${formatTime(currentTime)}
                     </a>
                 </th>
-                <td class="col-9">${input.val()}</td>
+                <td class="col-9" style="white-space: pre-wrap; word-wrap: break-word;">${input.val()}</td>
             </tr>
         `);
         input.val('');
+        currentTimeBox.text('');
         video.play();
     });
 
@@ -58,4 +60,6 @@ $(function () {
             video.play();
         };
     });
+
+console.log(formatTime(3500));
 });

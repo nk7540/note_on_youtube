@@ -7,3 +7,12 @@ const getParameterByName = (name, url) => {
   if (!results[2]) return '';
   return decodeURIComponent(results[2].replace(/\+/g, " "));
 };
+
+const formatTime = (seconds) => {
+  if (!Number.isInteger(seconds)) return false;
+  if (seconds < 3600) {
+    return new Date(seconds * 1000).toISOString().replace(/.*(\d{2}:\d{2}).*/, (match, p1) => p1);
+  } else {
+    return new Date(seconds * 1000).toISOString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, (match, p1) => p1);
+  };
+};
