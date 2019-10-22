@@ -33,9 +33,11 @@ $(function () {
 
     chrome.storage.sync.get([currentVideoId], function(result) {
         const notes = result[currentVideoId];
+        let index = 0;
         if (!notes) return false;
         $.each(notes, function(id, note) {
-            appendNote(id, ...Object.values(note));
+            appendNote(id, index, ...Object.values(note));
+            index++;
         });
     });
 
@@ -48,12 +50,17 @@ $(function () {
     $('#add-note').on('click', function(e){ 
         const value = input.val();
         chrome.storage.sync.get(function(items) {
-            if (!(currentVideoId in items)) items[currentVideoId] = {};
-            items[currentVideoId][items.latestId + 1] = { timestamp: currentTime, value: value };
             items.latestId++;
-            
+            if (!(currentVideoId in items)) items[currentVideoId] = {};
+            const currentVideoNotes = items[currentVideoId];
+            currentVideoNotes[items.latestId] = { timestamp: currentTime, value: value };
+            const sortedIds = Object.keys(currentVideoNotes).sort((a, b) => {
+                return currentVideoNotes[a].timestamp - currentVideoNotes[b].timestamp;
+            });
+            const indexOfTheId = sortedIds.indexOf(items.latestId.toString());
+
             chrome.storage.sync.set(items);
-            appendNote(items.latestId, currentTime, value);
+            appendNote(items.latestId, indexOfTheId, currentTime, value);
         });
         input.val('');
         currentTimeBox.text('');
@@ -105,19 +112,53 @@ $(function () {
         };
     });
 
-    function appendNote(id, timestamp, val) {
-        $('#notes-tbody').append(`
-            <tr id="${id}" class="d-flex">
-                <th class="col-2" scope="row">
-                    <a class="timestamps yt-simple-endpoint" href="/watch?v=${currentVideoId}&t=${timestamp}s">
-                        ${formatTime(timestamp)}
-                    </a>
-                </th>
-                <td class="col-8 note-value">${val}</td>
-                <td class="col-1 edit-note-button"><i class="far fa-edit"></i></td>
-                <td class="col-1 destroy-note-button"><i class="far fa-trash-alt"></i></td>
-            </tr>
-        `);
+    // @TODO 要素内スクロールにしたい・手動でもスクロールできるようにしたい
+    // setInterval(() => {
+    //     chrome.storage.sync.get(function(items){
+    //         let diff = [];
+    //         let index = 0;
+    //         const currentVideoNotes = items[currentVideoId];
+    //         if (!currentVideoNotes) return false;
+    //         const timestamps = $.map(currentVideoNotes, function(note, index) {
+    //             return note.timestamp;
+    //         });
+    //         if (!timestamps) return false;
+    //         $.each(timestamps, function(i, timestamp) {
+    //             diff[i] = Math.abs(video.currentTime - timestamp);
+    //             index = (diff[index] < diff[i]) ? index : i;
+    //         });
+    //         $('#notes-tbody').children('tr').eq(index).get(0).scrollIntoView({ behavior: 'smooth', block: 'center' });
+    //     });
+    // }, 1000);
+
+    function appendNote(id, indexOfTheId, timestamp, val) {
+        if (indexOfTheId == 0) {
+            $('#notes-tbody').prepend(`
+                <tr id="${id}" class="d-flex">
+                    <th class="col-2" scope="row">
+                        <a class="timestamps yt-simple-endpoint" href="/watch?v=${currentVideoId}&t=${timestamp}s">
+                            ${formatTime(timestamp)}
+                        </a>
+                    </th>
+                    <td class="col-8 note-value">${val}</td>
+                    <td class="col-1 edit-note-button"><i class="far fa-edit"></i></td>
+                    <td class="col-1 destroy-note-button"><i class="far fa-trash-alt"></i></td>
+                </tr>
+            `);
+        } else {
+            $('#notes-tbody').children('tr').eq(indexOfTheId - 1).after(`
+                <tr id="${id}" class="d-flex">
+                    <th class="col-2" scope="row">
+                        <a class="timestamps yt-simple-endpoint" href="/watch?v=${currentVideoId}&t=${timestamp}s">
+                            ${formatTime(timestamp)}
+                        </a>
+                    </th>
+                    <td class="col-8 note-value">${val}</td>
+                    <td class="col-1 edit-note-button"><i class="far fa-edit"></i></td>
+                    <td class="col-1 destroy-note-button"><i class="far fa-trash-alt"></i></td>
+                </tr>
+            `);
+        };
     };
 
     function updateNote(id, value) {
