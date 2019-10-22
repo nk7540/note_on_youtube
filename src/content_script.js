@@ -32,12 +32,11 @@ $(function () {
     var currentTime;
 
     chrome.storage.sync.get([currentVideoId], function(result) {
-        const notes = result[currentVideoId];
-        let index = 0;
-        if (!notes) return false;
-        $.each(notes, function(id, note) {
-            appendNote(id, index, ...Object.values(note));
-            index++;
+        const currentVideoNotes = result[currentVideoId];
+        if (!currentVideoNotes) return false;
+        const sortedIds = getSortedIds(currentVideoNotes);
+        $.each(sortedIds, function(index, id) {
+            appendNote(id, index, ...Object.values(currentVideoNotes[id]));
         });
     });
 
@@ -54,9 +53,7 @@ $(function () {
             if (!(currentVideoId in items)) items[currentVideoId] = {};
             const currentVideoNotes = items[currentVideoId];
             currentVideoNotes[items.latestId] = { timestamp: currentTime, value: value };
-            const sortedIds = Object.keys(currentVideoNotes).sort((a, b) => {
-                return currentVideoNotes[a].timestamp - currentVideoNotes[b].timestamp;
-            });
+            const sortedIds = getSortedIds(currentVideoNotes);
             const indexOfTheId = sortedIds.indexOf(items.latestId.toString());
 
             chrome.storage.sync.set(items);
@@ -166,6 +163,12 @@ $(function () {
         tr.find('div.input-group').remove();
         tr.children('td.note-value').text(value);
     };
+
+    function getSortedIds(notes) {
+        return Object.keys(notes).sort((a, b) => {
+            return notes[a].timestamp - notes[b].timestamp;
+        });
+    }
 
     input.keyup(function (e) {
         if (e.keyCode === 27) {
