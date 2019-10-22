@@ -9,6 +9,7 @@
       "jquery-2.2.0.min.js",
       "bootstrap-4.3.1-dist/js/bootstrap.min.js",
       "fontawesome-free-5.11.2-web/js/all.min.js",
+      "mousetrap-master/mousetrap.min.js",
       "utils.js",
       "ChEx.js",
       "content_script.js"
@@ -24,6 +25,7 @@
   },
   "options_page": "options.html",
   "permissions": [
-    "storage"
+    "storage",
+    "tabs"
   ]
 }

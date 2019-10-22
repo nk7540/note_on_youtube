@@ -166,4 +166,15 @@ $(function () {
         tr.find('div.input-group').remove();
         tr.children('td.note-value').text(value);
     };
+
+    input.keyup(function (e) {
+        if (e.keyCode === 27) {
+            $(this).blur();
+            video.play();
+        };
+    });
+
+    Mousetrap.bind('command+i', () => {
+        input.focus();
+    });
 });
