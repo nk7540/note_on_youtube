@@ -8,3 +8,16 @@
   padding: 10px 10px 20px;
   overflow-y: scroll;
 }
+
+td.destroy-note-button, td.edit-note-button {
+  display: none;
+}
+
+#notes tr:hover td.destroy-note-button, #notes tr:hover td.edit-note-button {
+  display: block;
+}
+
+.note-value {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
