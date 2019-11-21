@@ -2,7 +2,7 @@
 $(function () {
   let readyStateCheckInterval = setInterval(() => {
     if (document.readyState === "complete") {
-      if ($('#secondary').length) {
+      if ($('#secondary').length && getCurrentVideoId()) {
         initNotes();
       }
 
@@ -16,7 +16,7 @@ $(function () {
 
         function watchVideoForChanges(latestVideoId) {
           setInterval(() => {
-            if (latestVideoId !== getCurrentVideoId()) {
+            if (getCurrentVideoId() && latestVideoId !== getCurrentVideoId()) {
               $("#notes").remove();
 
               buildNotes();
