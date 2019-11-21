@@ -1,7 +1,7 @@
 {
   "name": "YouTube上でメモが取れる！",
   "description": "学習や、お気に入りのシーン記録に最適！",
-  "version": "0.3",
+  "version": "0.3.1",
   "manifest_version": 2,
   "content_scripts": [{
     "matches": ["https://www.youtube.com/*"],
