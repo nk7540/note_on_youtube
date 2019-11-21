@@ -1,25 +1,40 @@
 const initWatchers = () => {
   watchInputFocus();
+  // watchInputBlur();
   watchClickAddNote();
   watchClickEditNote();
   watchClickEditInput();
   watchClickDeleteNote();
   watchClickTimestamp();
+  watchKeyModifyTimestamp();
+  watchClickIncreaseTimestamp();
+  watchClickDecreaseTimestamp();
+  watchKeySkipVideo();
 };
 
 const SPARE_SECOND = 3;
+const SKIP_SECOND = 3;
 var noteTimestamp;
 
 const watchInputFocus = () => {
   $('#note-input').on('focus', function(e){
     const video = $('video').get(0);
-    const currentTimeBox = $('#current-time-box');
-    video.pause();
-    noteTimestamp = Math.floor(video.currentTime) - SPARE_SECOND;
-    if (noteTimestamp < 0) noteTimestamp = 0;
-    currentTimeBox.text(formatTime(noteTimestamp))
+    if (!$('#current-time-box').text()) {
+      video.pause();
+      noteTimestamp = decreaseByOrZero(Math.floor(video.currentTime), SPARE_SECOND);
+      updateTimeBox();
+    };
   });
 };
+
+// const watchInputBlur = () => {
+//   $('#note-input').on('blur', function(e){
+//     const video = $('video').get(0);
+//     noteTimestamp = '';
+//     video.play();
+//     updateTimeBox();
+//   });
+// };
 
 const watchClickAddNote = () => {
   $('#add-note').on('click', function(e){
@@ -97,6 +112,43 @@ const watchClickTimestamp = () => {
     video.currentTime = time[0].substring(2);
     if (video.paused) {
       video.play();
+    };
+  });
+};
+
+const watchKeyModifyTimestamp = () => {
+  $(document).on('keyup', '.modify-timestamp', function(e){
+    if (e.keyCode === 78) {
+      noteTimestamp++; // Press n
+    } else if (e.keyCode === 80) {
+      noteTimestamp = decreaseByOrZero(noteTimestamp, 1); // Press p
+    };
+    updateTimeBox();
+  });
+};
+
+const watchClickIncreaseTimestamp = () => {
+  $(document).on('click', '#increase-timestamp', function(e){
+    noteTimestamp++;
+    updateTimeBox();
+  });
+};
+
+const watchClickDecreaseTimestamp = () => {
+  $(document).on('click', '#decrease-timestamp', function(e){
+    noteTimestamp = decreaseByOrZero(noteTimestamp, 1);
+    updateTimeBox();
+  });
+};
+
+const watchKeySkipVideo = () => {
+  $(document).on('keyup', function(e){
+    const video = $('video').get(0);
+    const currentTime = video.currentTime;
+    if (e.keyCode === 69) {
+      video.currentTime = currentTime + SKIP_SECOND; // Press e
+    } else if (e.keyCode === 89) {
+      video.currentTime = decreaseByOrZero(currentTime, SKIP_SECOND); // Press y
     };
   });
 };

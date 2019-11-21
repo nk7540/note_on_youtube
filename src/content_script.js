@@ -54,6 +54,8 @@ $(function () {
     const video = $('video').get(0);
     if (e.keyCode === 27) {
       $('#note-input').blur();
+      noteTimestamp = '';
+      updateTimeBox();
       video.play();
     };
   });

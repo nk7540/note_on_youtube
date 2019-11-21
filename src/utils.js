@@ -26,3 +26,21 @@ const getSortedIds = (notes) => {
 const getCurrentVideoId = () => {
 	return getParameterByName("v");
 };
+
+const decreaseByOrZero = (value, num) => {
+  value -= num;
+  if (value < 0) {
+    return 0;
+  } else {
+    return value;
+  };
+};
+
+const updateTimeBox = () => {
+  const timestamp = formatTime(noteTimestamp);
+  if (timestamp) {
+    $('#current-time-box').text(timestamp);
+  } else {
+    $('#current-time-box').text('');
+  };
+};

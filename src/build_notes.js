@@ -1,8 +1,14 @@
 const buildInput = () => {
   $('#secondary').prepend(`
     <div class="input-group">
-      <div class="input-group-prepend">
+      <div class="input-group-prepend" style="display: block;">
+        <button id="decrease-timestamp" class="btn btn-outline-secondary modify-timestamp" type="button">
+          <i class="fas fa-caret-up"></i>
+        </button>
         <span class="input-group-text" id="current-time-box"></span>
+        <button id="increase-timestamp" class="btn btn-outline-secondary modify-timestamp" type="button">
+          <i class="fas fa-caret-down"></i>
+        </button>
       </div>
       <textarea id="note-input" type="text" class="form-control" placeholder="メモを追加" rows="4"></textarea>
       <div class="input-group-append">
@@ -11,7 +17,6 @@ const buildInput = () => {
     </div>
   `);
 }
-
 const buildNotes = () => {
   $('#secondary').prepend(`
     <div id="notes" class="container">
