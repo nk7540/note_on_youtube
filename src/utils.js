@@ -16,3 +16,13 @@ const formatTime = (seconds) => {
     return new Date(seconds * 1000).toISOString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, (match, p1) => p1);
   };
 };
+
+const getSortedIds = (notes) => {
+  return Object.keys(notes).sort((a, b) => {
+    return notes[a].timestamp - notes[b].timestamp;
+  });
+};
+
+const getCurrentVideoId = () => {
+	return getParameterByName("v");
+};

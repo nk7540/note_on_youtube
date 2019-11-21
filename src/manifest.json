@@ -11,6 +11,8 @@
       "fontawesome-free-5.11.2-web/js/all.min.js",
       "mousetrap.min.js",
       "utils.js",
+      "watchers.js",
+      "build_notes.js",
       "ChEx.js",
       "content_script.js"
     ],
