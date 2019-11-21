@@ -7,15 +7,17 @@ const initWatchers = () => {
   watchClickTimestamp();
 };
 
-var currentTime;
+const SPARE_SECOND = 3;
+var noteTimestamp;
 
 const watchInputFocus = () => {
   $('#note-input').on('focus', function(e){
     const video = $('video').get(0);
     const currentTimeBox = $('#current-time-box');
     video.pause();
-    currentTime = Math.floor(video.currentTime);
-    currentTimeBox.text(formatTime(currentTime))
+    noteTimestamp = Math.floor(video.currentTime) - SPARE_SECOND;
+    if (noteTimestamp < 0) noteTimestamp = 0;
+    currentTimeBox.text(formatTime(noteTimestamp))
   });
 };
 
@@ -30,12 +32,12 @@ const watchClickAddNote = () => {
       items.latestId++;
       if (!(currentVideoId in items)) items[currentVideoId] = {};
       const currentVideoNotes = items[currentVideoId];
-      currentVideoNotes[items.latestId] = { timestamp: currentTime, value: value };
+      currentVideoNotes[items.latestId] = { timestamp: noteTimestamp, value: value };
       const sortedIds = getSortedIds(currentVideoNotes);
       const indexOfTheId = sortedIds.indexOf(items.latestId.toString());
 
       chrome.storage.sync.set(items);
-      appendNote(items.latestId, indexOfTheId, currentTime, value);
+      appendNote(items.latestId, indexOfTheId, noteTimestamp, value);
     });
     input.val('');
     currentTimeBox.text('');
