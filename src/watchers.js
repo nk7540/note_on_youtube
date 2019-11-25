@@ -1,6 +1,8 @@
 const initWatchers = () => {
   watchInputFocus();
   // watchInputBlur();
+  watchTextInputsFocus();
+  watchTextInputsBlur();
   watchClickAddNote();
   watchClickEditNote();
   watchClickEditInput();
@@ -35,6 +37,19 @@ const watchInputFocus = () => {
 //     updateTimeBox();
 //   });
 // };
+
+const watchTextInputsFocus = () => {
+  $(document).on('focus', 'input, textarea', function(e){
+console.log('called');
+    document.removeEventListener('keyup', skipVideo, false);
+  });
+};
+
+const watchTextInputsBlur = () => {
+  $(document).on('blur', 'input, textarea', function(e){
+    document.addEventListener('keyup', skipVideo, false);
+  });
+};
 
 const watchClickAddNote = () => {
   $('#add-note').on('click', function(e){
@@ -142,13 +157,15 @@ const watchClickDecreaseTimestamp = () => {
 };
 
 const watchKeySkipVideo = () => {
-  $(document).on('keyup', function(e){
-    const video = $('video').get(0);
-    const currentTime = video.currentTime;
-    if (e.keyCode === 69) {
-      video.currentTime = currentTime + SKIP_SECOND; // Press e
-    } else if (e.keyCode === 89) {
-      video.currentTime = decreaseByOrZero(currentTime, SKIP_SECOND); // Press y
-    };
-  });
+  document.addEventListener('keyup', skipVideo, false);
+};
+
+const skipVideo = e => {
+  const video = $('video').get(0);
+  const currentTime = video.currentTime;
+  if (e.keyCode === 69) {
+    video.currentTime = currentTime + SKIP_SECOND; // Press e
+  } else if (e.keyCode === 89) {
+    video.currentTime = decreaseByOrZero(currentTime, SKIP_SECOND); // Press y
+  };
 };
